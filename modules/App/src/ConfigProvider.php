@@ -7,6 +7,8 @@ namespace App;
 use App\Console\ApplicationFactory;
 use App\Console\Commands\CreateUserCommand;
 use App\Console\Commands\GetUserCommand;
+use App\Factories\UserManagerAwareFactory;
+use App\Http\Handlers\GetUserHandler;
 use App\Services\UserManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Container\ContainerInterface;
@@ -33,15 +35,15 @@ class ConfigProvider
     {
         return [
             'factories' => [
+                // Console
                 Application::class => ApplicationFactory::class,
+                CreateUserCommand::class => UserManagerAwareFactory::class,
+                GetUserCommand::class => UserManagerAwareFactory::class,
 
-                CreateUserCommand::class => function (ContainerInterface $container) {
-                    return new CreateUserCommand($container->get(UserManager::class));
-                },
-                GetUserCommand::class => function (ContainerInterface $container) {
-                    return new GetUserCommand($container->get(UserManager::class));
-                },
+                // Http
+                GetUserHandler::class => UserManagerAwareFactory::class,
 
+                // Services
                 UserManager::class => function (ContainerInterface $container) {
                     return new UserManager($container->get(EntityManagerInterface::class));
                 },

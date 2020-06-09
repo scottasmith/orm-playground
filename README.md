@@ -1,5 +1,6 @@
-# Intro
+# Overview
 This is a Doctrine ORM playground mixed in with the [Laminas ServiceManager](https://docs.laminas.dev/laminas-servicemanager)
+It is NOT meant to be anything other than a playground. There are no password hashers or any other special things.
 
 # Installation
 This demo requires Docker to be installed and set up. You need to create the volumes then you can bring up the container:
