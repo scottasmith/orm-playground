@@ -1,0 +1,24 @@
+#!/usr/bin/env php
+<?php
+chdir(dirname(__DIR__));
+
+require 'vendor/autoload.php';
+
+use Doctrine\ORM\EntityManagerInterface;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\Console\Application;
+
+(function ()
+{
+    /** @var ContainerInterface $container */
+    $container = require dirname(__DIR__) . '/config/container.php';
+
+    /** @var Application $app */
+    $application = $container->get(Application::class);
+
+    try {
+        $application->run();
+    } catch (Exception $exc) {
+        echo "Unhandled Exception: " . $exc;
+    }
+})();

@@ -1,0 +1,44 @@
+version: "3.5"
+
+services:
+  web:
+    image: scottsmith/php:7.4-stretch-devtools
+    environment:
+      - PHP_IDE_CONFIG=serverName=doctrine-orm
+      - XDEBUG_ENABLED=true
+      - XDEBUG_REMOTE_HOST=host.docker.internal
+      - COMPOSER_MEMORY_LIMIT=-1
+    labels:
+      # Traefik v2.2
+      traefik.enable: "true"
+      traefik.http.routers.doctrine-orm.rule: "Host(`local.doctrine-orm`)"
+      traefik.http.routers.doctrine-orm.entrypoints: web
+      traefik.http.services.doctrine-orm.loadbalancer.server.port: 80
+    volumes:
+      - .:/var/www
+      - composer-cache:/root/.composer
+      - npm-cache:/root/.npm
+      - yarn-cache:/usr/local/share/.cache/yarn/v4
+
+  mysql:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_DATABASE=${DATABASE_DB}
+      - MYSQL_USER=${DATABASE_USERNAME}
+      - MYSQL_PASSWORD=${DATABASE_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DATABASE_PASSWORD}
+    volumes:
+      - demo-mysql-data:/var/lib/mysql-files
+    ports:
+      - 3307:3306
+
+volumes:
+  demo-mysql-data:
+    external: true
+  composer-cache:
+    external: true
+  npm-cache:
+    external: true
+  yarn-cache:
+    external: true
