@@ -1,34 +1,39 @@
-# Installation
-This demo requires Docker to be installed and set up.
+# Intro
+This is a Doctrine ORM playground mixed in with the [Laminas ServiceManager](https://docs.laminas.dev/laminas-servicemanager)
 
-## Docker Volumes
+# Installation
+This demo requires Docker to be installed and set up. You need to create the volumes then you can bring up the container:
 ```shell script
 $ docker volume create demo-mysql-data
 $ docker volume create composer-cache
 $ docker volume create npm-cache
 $ docker volume create yarn-cache
+$ docker-compose up -d
 ```
 
 ## MySQL
+There is a contained MySQL instance using the docker volume `demo-mysql-data`.
 You can connect to MySQL on 127.0.0.1 with port 3307
 ```shell script
 $ mysql -h127.0.0.1 -P 3307 -uroot -p
 ```
+The password in the `.env` is secret
 
-The default password in the `.env` is secret
+## Application setup
+When the container is up you can exec into it:
+```shell script
+$ docker exec -it orm_web_1 bash
+```
 
-## Composer and Migrations
-Exec into the docker container and type:
+Then install composer packages and run migrations:
 ```shell script
 $ composer install
 $ bin/console migration:migrate
 ```
 
-# Console
-Exec into the docker container and type:
+# Test commands
+There are some test commands to create and get a user:
 ```shell script
-$ bin/console
-..
 $ bin/console user:create
 $ bin/console user:get
 ```
@@ -39,4 +44,5 @@ To create a migration type inside the container:
 $ bin/console migration:generate --namespace App\\DoctrineMigrations
 ```
 
-This creates a migration in `modules/App/doctrine_migrations/`
+This creates a migration in `modules/App/doctrine_migrations/`.
+The namespace `App\\DoctrineMigrations` mapping is set-up in `modules/App/config/doctrine.php 
